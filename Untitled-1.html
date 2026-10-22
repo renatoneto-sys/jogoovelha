@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐑 Ovelhinha Aventureira</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: #e8f7df;
+        color: #263b26;
+        text-align: center;
+    }
+
+    .descricao {
+        max-width: 850px;
+        margin: 0 auto 25px;
+        padding: 25px;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px #0002;
+        text-align: left;
+        line-height: 1.7;
+    }
+
+    h1 {
+        text-align: center;
+        color: #348044;
+        margin-top: 0;
+    }
+
+    h2 {
+        color: #348044;
+    }
+
+    .descricao ul {
+        padding-left: 25px;
+    }
+
+    .jogo {
+        max-width: 850px;
+        margin: auto;
+        padding: 20px;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px #0002;
+    }
+
+    .placar {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 25px;
+        margin-bottom: 15px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        border: 4px solid #427a35;
+        border-radius: 12px;
+        background: #78d65b;
+    }
+
+    button {
+        margin: 12px 5px;
+        padding: 12px 22px;
+        border: none;
+        border-radius: 10px;
+        background: #348044;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #246332;
+    }
+
+    .controles {
+        margin-top: 12px;
+        color: #405840;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 10px;
+        }
+
+        .descricao, .jogo {
+            padding: 14px;
+        }
+
+        .placar {
+            gap: 12px;
+            font-size: 16px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<section class="descricao">
+    <h1>🐑 Jogo: Ovelhinha Aventureira</h1>
+
+    <h2>Características do jogo:</h2>
+
+    <ul>
+        <li><strong>Personagem principal:</strong>
+        uma ovelha controlada pelo jogador.</li>
+
+        <li><strong>Cenário:</strong>
+        um campo verde com flores, árvores e maçãs.</li>
+
+        <li><strong>Controles:</strong>
+        setas do teclado ou teclas WASD.</li>
+
+        <li><strong>Pontuação:</strong>
+        cada maçã coletada vale 10 pontos.</li>
+
+        <li><strong>Vidas:</strong>
+        o jogador começa com 3 vidas.</li>
+
+        <li><strong>Obstáculos:</strong>
+        árvores que devem ser evitadas.</li>
+
+        <li><strong>Reinício:</strong>
+        permite começar uma nova partida.</li>
+    </ul>
+
+    <h2>🎯 Objetivos do jogo:</h2>
+
+    <p>
+        O principal objetivo é controlar a ovelhinha pelo campo,
+        coletar o máximo de maçãs possível e acumular pontos.
+        Para isso, o jogador deve desviar das árvores e evitar
+        perder todas as suas vidas. O desafio é alcançar a maior
+        pontuação possível enquanto se diverte com a aventura!
+    </p>
+</section>
+
+<section class="jogo">
+    <h1>🎮 Vamos jogar!</h1>
+
+    <div class="placar">
+        <span>🍎 Pontos: <span id="pontos">0</span></span>
+        <span>❤️ Vidas: <span id="vidas">3</span></span>
+    </div>
+
+    <canvas id="jogo" width="800" height="450"></canvas>
+
+    <p class="controles">
+        Use as setas ou WASD para movimentar a ovelhinha.
+        Colete maçãs e evite as árvores!
+    </p>
+
+    <button id="reiniciar">🔄 Reiniciar jogo</button>
+</section>
+
+<script>
+const canvas = document.getElementById("jogo");
+const ctx = canvas.getContext("2d");
+
+const pontosTexto = document.getElementById("pontos");
+const vidasTexto = document.getElementById("vidas");
+const botaoReiniciar = document.getElementById("reiniciar");
+
+let pontos = 0;
+let vidas = 3;
+let terminou = false;
+let invulneravelAte = 0;
+const teclas = {};
+
+const ovelha = {
+    x: 65,
+    y: 225,
+    velocidade: 4,
+    raio: 23
+};
+
+const arvores = [
+    { x: 220, y: 110, raio: 34 },
+    { x: 370, y: 325, raio: 38 },
+    { x: 510, y: 135, raio: 35 },
+    { x: 680, y: 310, raio: 38 }
+];
+
+const maca = {
+    x: 600,
+    y: 220,
+    raio: 13
+};
+
+document.addEventListener("keydown", function(event) {
+    const tecla = event.key.toLowerCase();
+
+    if (["arrowup", "arrowdown", "arrowleft", "arrowright",
+         "w", "a", "s", "d"].includes(tecla)) {
+        event.preventDefault();
+        teclas[tecla] = true;
+    }
+});
+
+document.addEventListener("keyup", function(event) {
+    teclas[event.key.toLowerCase()] = false;
+});
+
+function distancia(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function sortearMaca() {
+    let tentativas = 0;
+
+    do {
+        maca.x = 35 + Math.random() * (canvas.width - 70);
+        maca.y = 35 + Math.random() * (canvas.height - 70);
+        tentativas++;
+    } while (
+        arvores.some(arvore =>
+            distancia(maca, arvore) < arvore.raio + 30
+        ) && tentativas < 100
+    );
+}
+
+function movimentar() {
+    if (teclas["arrowup"] || teclas["w"]) {
+        ovelha.y -= ovelha.velocidade;
+    }
+
+    if (teclas["arrowdown"] || teclas["s"]) {
+        ovelha.y += ovelha.velocidade;
+    }
+
+    if (teclas["arrowleft"] || teclas["a"]) {
+        ovelha.x -= ovelha.velocidade;
+    }
+
+    if (teclas["arrowright"] || teclas["d"]) {
+        ovelha.x += ovelha.velocidade;
+    }
+
+    ovelha.x = Math.max(
+        ovelha.raio,
+        Math.min(canvas.width - ovelha.raio, ovelha.x)
+    );
+
+    ovelha.y = Math.max(
+        ovelha.raio,
+        Math.min(canvas.height - ovelha.raio, ovelha.y)
+    );
+}
+
+function verificarColisoes() {
+    if (distancia(ovelha, maca) < ovelha.raio + maca.raio) {
+        pontos += 10;
+        pontosTexto.textContent = pontos;
+        sortearMaca();
+    }
+
+    const agora = performance.now();
+
+    if (agora < invulneravelAte) {
+        return;
+    }
+
+    for (const arvore of arvores) {
+        if (distancia(ovelha, arvore) <
+            ovelha.raio + arvore.raio * 0.7) {
+
+            vidas--;
+            vidasTexto.textContent = vidas;
+
+            ovelha.x = 65;
+            ovelha.y = 225;
+            invulneravelAte = agora + 1000;
+
+            if (vidas <= 0) {
+                terminou = true;
+            }
+
+            break;
+        }
+    }
+}
+
+function desenharCampo() {
+    ctx.fillStyle = "#78d65b";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Flores espalhadas pelo campo
+    for (let i = 0; i < 35; i++) {
+        const x = (i * 127 + 30) % canvas.width;
+        const y = (i * 83 + 20) % canvas.height;
+
+        ctx.fillStyle = "#fff4a3";
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(x + 4, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function desenharArvores() {
+    for (const arvore of arvores) {
+        // Tronco
+        ctx.fillStyle = "#86502d";
+        ctx.fillRect(arvore.x - 8, arvore.y, 16, 28);
+
+        // Copa
+        ctx.fillStyle = "#26783b";
+        ctx.beginPath();
+        ctx.arc(
+            arvore.x,
+            arvore.y - 5,
+            arvore.raio,
+            0,
+            Math.PI * 2
+        );
+        ctx.fill();
+
+        ctx.fillStyle = "#369447";
+        ctx.beginPath();
+        ctx.arc(
+            arvore.x - 10,
+            arvore.y - 15,
+            arvore.raio * 0.65,
+            0,
+            Math.PI * 2
+        );
+        ctx.fill();
+    }
+}
+
+function desenharMaca() {
+    // Corpo da maçã
+    ctx.fillStyle = "#e62929";
+    ctx.beginPath();
+    ctx.arc(maca.x, maca.y, maca.raio, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(maca.x + 7, maca.y, maca.raio * 0.7,
+            0, Math.PI * 2);
+    ctx.fill();
+
+    // Cabinho
+    ctx.strokeStyle = "#684126";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(maca.x, maca.y - 10);
+    ctx.lineTo(maca.x + 2, maca.y - 16);
+    ctx.stroke();
+
+    // Folha
+    ctx.fillStyle = "#176c30";
+    ctx.beginPath();
+    ctx.ellipse(
+        maca.x + 7, maca.y - 13, 6, 3, -0.4, 0, Math.PI * 2
+    );
+    ctx.fill();
+}
+
+function desenharOvelha() {
+    // Piscar brevemente depois de bater em uma árvore
+    if (performance.now() < invulneravelAte &&
+        Math.floor(performance.now() / 100) % 2 === 0) {
+        return;
+    }
+
+    // Patas
+    ctx.strokeStyle = "#383838";
+    ctx.lineWidth = 5;
+    ctx.lineCap = "round";
+
+    for (const dx of [-12, 8]) {
+        ctx.beginPath();
+        ctx.moveTo(ovelha.x + dx, ovelha.y + 12);
+        ctx.lineTo(ovelha.x + dx, ovelha.y + 24);
+        ctx.stroke();
+    }
+
+    // Corpo de lã
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(ovelha.x - 5, ovelha.y, 19, 0, Math.PI * 2);
+    ctx.arc(ovelha.x + 8, ovelha.y - 4, 17, 0, Math.PI * 2);
+    ctx.arc(ovelha.x - 10, ovelha.y - 9, 13, 0, Math.PI * 2);
+    ctx.arc(ovelha.x + 2, ovelha.y - 14, 13, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cabeça
+    ctx.fillStyle = "#454545";
+    ctx.beginPath();
+    ctx.ellipse(
+        ovelha.x + 19, ovelha.y - 5, 12, 15, 0.2,
+        0, Math.PI * 2
+    );
+    ctx.fill();
+
+    // Orelha
+    ctx.beginPath();
+    ctx.ellipse(
+        ovelha.x + 9, ovelha.y - 13, 5, 9, -0.8,
+        0, Math.PI * 2
+    );
+    ctx.fill();
+
+    // Olho
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(ovelha.x + 23, ovelha.y - 9, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#111111";
+    ctx.beginPath();
+    ctx.arc(ovelha.x + 24, ovelha.y - 9, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Focinho
+    ctx.fillStyle = "#f4b5b5";
+    ctx.beginPath();
+    ctx.arc(ovelha.x + 29, ovelha.y + 1, 4, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function desenharMensagem(titulo, subtitulo) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 38px Arial";
+    ctx.fillText(titulo, canvas.width / 2, canvas.height / 2 - 15);
+
+    ctx.font = "22px Arial";
+    ctx.fillText(subtitulo, canvas.width / 2, canvas.height / 2 + 30);
+}
+
+function desenhar() {
+    desenharCampo();
+    desenharArvores();
+    desenharMaca();
+    desenharOvelha();
+
+    if (terminou) {
+        desenharMensagem(
+            "🐑 Fim de jogo!",
+            "Pontuação: " + pontos + " pontos"
+        );
+    }
+}
+
+function atualizar() {
+    if (!terminou) {
+        movimentar();
+        verificarColisoes();
+    }
+
+    desenhar();
+    requestAnimationFrame(atualizar);
+}
+
+function reiniciarJogo() {
+    pontos = 0;
+    vidas = 3;
+    terminou = false;
+    invulneravelAte = 0;
+
+    ovelha.x = 65;
+    ovelha.y = 225;
+
+    pontosTexto.textContent = pontos;
+    vidasTexto.textContent = vidas;
+
+    sortearMaca();
+}
+
+botaoReiniciar.addEventListener("click", reiniciarJogo);
+
+sortearMaca();
+atualizar();
+</script>
+
+</body>
+</html>

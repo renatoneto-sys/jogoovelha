@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: #87ceeb;
+}
+
+h1 {
+    color: white;
+    text-shadow: 2px 2px 4px #555;
+}
+
+.placar {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+canvas {
+    background: #6fcf55;
+    border: 5px solid #333;
+    border-radius: 15px;
+    max-width: 90%;
+}
+
+p {
+    font-size: 18px;
+}
+
+button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: white;
+}
+
+button:hover {
+    background: #ddd;
+}

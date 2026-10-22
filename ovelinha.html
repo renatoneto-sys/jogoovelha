@@ -1,0 +1,677 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐑 Ovelhinha Aventureira</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: "Trebuchet MS", Arial, sans-serif;
+    color: #24442c;
+    background: linear-gradient(#8ce7ff, #e8ffd9 45%, #b4ef91);
+}
+
+header {
+    max-width: 1000px;
+    margin: 0 auto 22px;
+    padding: 30px 15px;
+    text-align: center;
+    color: white;
+    background: linear-gradient(135deg, #ffb84d, #ff7b6b, #b66bdf);
+    border: 5px solid white;
+    border-radius: 25px;
+    box-shadow: 0 7px 0 #d5a75e;
+}
+
+header h1 {
+    margin: 0;
+    font-size: clamp(28px, 5vw, 46px);
+    text-shadow: 3px 3px #874c36;
+}
+
+header p {
+    margin-bottom: 0;
+    font-size: 18px;
+}
+
+.descricao {
+    max-width: 1000px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 18px;
+}
+
+.card {
+    padding: 22px;
+    border: 3px solid white;
+    border-radius: 22px;
+    box-shadow: 0 5px 12px #376c3020;
+    line-height: 1.8;
+}
+
+.caracteristicas {
+    background: #fff9d9;
+}
+
+.objetivos {
+    background: #f5e5ff;
+}
+
+.card h2 {
+    margin-top: 0;
+    padding: 10px;
+    border-radius: 14px;
+    color: white;
+    text-align: center;
+    font-size: 21px;
+}
+
+.caracteristicas h2 {
+    background: #278b53;
+}
+
+.objetivos h2 {
+    background: #9851bc;
+}
+
+.card ul {
+    padding-left: 22px;
+}
+
+.card li {
+    margin-bottom: 7px;
+}
+
+.jogo {
+    max-width: 1000px;
+    margin: 25px auto;
+    padding: 18px;
+    background: #fff;
+    border: 5px solid #55a74a;
+    border-radius: 25px;
+    box-shadow: 0 8px 0 #34763c;
+}
+
+.jogo h2 {
+    text-align: center;
+    color: #278b53;
+    font-size: 27px;
+}
+
+.placar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.info {
+    padding: 10px 17px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.pontos {
+    background: #ffe39a;
+}
+
+.vidas {
+    background: #ffcbd5;
+}
+
+.fase {
+    background: #d8edff;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 4px solid #317842;
+    border-radius: 16px;
+    background: #85dc62;
+    touch-action: none;
+}
+
+.instrucoes {
+    text-align: center;
+    line-height: 1.8;
+}
+
+button {
+    display: block;
+    margin: 15px auto 5px;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 15px;
+    background: #ff8d42;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px #cb6429;
+}
+
+button:hover {
+    background: #f2762b;
+}
+
+footer {
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+@media (max-width: 500px) {
+    body {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .jogo {
+        padding: 9px;
+    }
+
+    .info {
+        font-size: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🐑 Ovelhinha Aventureira 🍎</h1>
+    <p>🌈 Uma aventura colorida cheia de frutas e desafios! 🌻</p>
+</header>
+
+<section class="descricao">
+
+    <article class="card caracteristicas">
+        <h2>🌳 Características do jogo</h2>
+        <ul>
+            <li><strong>🐑 Personagem:</strong> uma ovelhinha controlada pelo jogador.</li>
+            <li><strong>🌿 Cenário:</strong> campo verde com flores, arbustos, árvores e riacho.</li>
+            <li><strong>🎮 Controles:</strong> setas do teclado ou teclas WASD.</li>
+            <li><strong>🍓 Frutas:</strong> maçãs, morangos, bananas, laranjas e uvas.</li>
+            <li><strong>⭐ Pontuação:</strong> cada fruta vale 10 pontos.</li>
+            <li><strong>❤️ Vidas:</strong> o jogador começa com 3 vidas.</li>
+            <li><strong>🪵 Obstáculos:</strong> árvores, pedras, cercas e troncos.</li>
+            <li><strong>🔄 Reinício:</strong> permite começar uma nova partida.</li>
+        </ul>
+    </article>
+
+    <article class="card objetivos">
+        <h2>🎯 Objetivos do jogo</h2>
+        <p>
+            O principal objetivo é guiar a ovelhinha pelo campo,
+            coletando o máximo de frutas possível para acumular pontos.
+            Durante a aventura, o jogador deve desviar das árvores,
+            pedras, cercas e troncos, evitando perder todas as vidas.
+        </p>
+        <p>
+            🍎 Explore o cenário, encontre as frutas e tente alcançar
+            a maior pontuação possível. Divirta-se nessa aventura
+            cheia de cores, desafios e surpresas!
+        </p>
+        <p><strong>🌟 Prepare-se para a aventura!</strong></p>
+    </article>
+
+</section>
+
+<section class="jogo">
+    <h2>🎮 Vamos jogar!</h2>
+
+    <div class="placar">
+        <div class="info pontos">🍎 Pontos: <span id="pontos">0</span></div>
+        <div class="info vidas">❤️ Vidas: <span id="vidas">3</span></div>
+        <div class="info fase">🌟 Fase: <span id="fase">1</span></div>
+    </div>
+
+    <canvas id="jogo" width="900" height="520"></canvas>
+
+    <p class="instrucoes">
+        ⬆️⬇️⬅️➡️ Use as setas ou WASD para se movimentar.<br>
+        🍎 Pegue as frutas e fuja dos obstáculos!<br>
+        🌟 A cada 100 pontos, você avança de fase.
+    </p>
+
+    <button id="reiniciar">🔄 Reiniciar aventura</button>
+</section>
+
+<footer>
+    🌻 Boa diversão com a Ovelhinha Aventureira! 🐑
+</footer>
+
+<script>
+const canvas = document.getElementById("jogo");
+const ctx = canvas.getContext("2d");
+
+const pontosEl = document.getElementById("pontos");
+const vidasEl = document.getElementById("vidas");
+const faseEl = document.getElementById("fase");
+
+const W = canvas.width;
+const H = canvas.height;
+
+let pontos = 0;
+let vidas = 3;
+let fase = 1;
+let fimDeJogo = false;
+let protecao = 0;
+let ultimoDano = 0;
+let ultimoTempo = 0;
+
+const teclas = {};
+
+const ovelha = {
+    x: 65,
+    y: 70,
+    raio: 17,
+    velocidade: 3.5
+};
+
+// Obstáculos fixos do cenário
+const obstaculos = [
+    { x: 175, y: 90, tipo: "tree", r: 27 },
+    { x: 340, y: 165, tipo: "rock", r: 22 },
+    { x: 520, y: 80, tipo: "tree", r: 27 },
+    { x: 720, y: 155, tipo: "log", r: 25 },
+    { x: 115, y: 275, tipo: "rock", r: 22 },
+    { x: 300, y: 340, tipo: "fence", r: 29 },
+    { x: 485, y: 270, tipo: "tree", r: 27 },
+    { x: 700, y: 390, tipo: "rock", r: 22 },
+    { x: 825, y: 275, tipo: "tree", r: 27 },
+    { x: 165, y: 445, tipo: "log", r: 25 },
+    { x: 570, y: 440, tipo: "fence", r: 29 }
+];
+
+// Frutas diferentes
+const tiposFrutas = ["🍎", "🍓", "🍊", "🍌", "🍇"];
+let frutas = [];
+
+function distancia(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function posicaoLivre(x, y, raio = 18) {
+    if (x < 30 || x > W - 30 || y < 30 || y > H - 30) {
+        return false;
+    }
+
+    if (distancia({ x, y }, ovelha) < raio + 45) {
+        return false;
+    }
+
+    return !obstaculos.some(o =>
+        distancia({ x, y }, o) < raio + o.r + 12
+    );
+}
+
+function novaFruta() {
+    for (let i = 0; i < 150; i++) {
+        const x = 35 + Math.random() * (W - 70);
+        const y = 35 + Math.random() * (H - 70);
+
+        if (posicaoLivre(x, y, 17)) {
+            return {
+                x,
+                y,
+                tipo: tiposFrutas[
+                    Math.floor(Math.random() * tiposFrutas.length)
+                ]
+            };
+        }
+    }
+
+    return { x: 850, y: 480, tipo: "🍎" };
+}
+
+function criarFrutas() {
+    frutas = [];
+
+    // Mais frutas conforme o jogador avança de fase
+    const quantidade = Math.min(8 + fase * 2, 24);
+
+    for (let i = 0; i < quantidade; i++) {
+        frutas.push(novaFruta());
+    }
+}
+
+document.addEventListener("keydown", e => {
+    const k = e.key.toLowerCase();
+
+    if (["arrowup", "arrowdown", "arrowleft", "arrowright",
+         "w", "a", "s", "d"].includes(k)) {
+        e.preventDefault();
+        teclas[k] = true;
+    }
+});
+
+document.addEventListener("keyup", e => {
+    teclas[e.key.toLowerCase()] = false;
+});
+
+function moverOvelha(dt) {
+    if (fimDeJogo) return;
+
+    let dx = 0;
+    let dy = 0;
+
+    if (teclas["arrowup"] || teclas["w"]) dy--;
+    if (teclas["arrowdown"] || teclas["s"]) dy++;
+    if (teclas["arrowleft"] || teclas["a"]) dx--;
+    if (teclas["arrowright"] || teclas["d"]) dx++;
+
+    // Evita movimento diagonal mais rápido
+    const tamanho = Math.hypot(dx, dy);
+
+    if (tamanho > 0) {
+        dx /= tamanho;
+        dy /= tamanho;
+    }
+
+    const velocidade = ovelha.velocidade * dt;
+
+    ovelha.x += dx * velocidade;
+    ovelha.y += dy * velocidade;
+
+    ovelha.x = Math.max(20, Math.min(W - 20, ovelha.x));
+    ovelha.y = Math.max(25, Math.min(H - 20, ovelha.y));
+}
+
+function verificarColisoes(agora) {
+    if (fimDeJogo) return;
+
+    // Coletar frutas
+    for (let i = frutas.length - 1; i >= 0; i--) {
+        if (distancia(ovelha, frutas[i]) < 30) {
+            frutas.splice(i, 1);
+            pontos += 10;
+            pontosEl.textContent = pontos;
+
+            const novaFase = Math.floor(pontos / 100) + 1;
+
+            if (novaFase !== fase) {
+                fase = novaFase;
+                faseEl.textContent = fase;
+                ovelha.velocidade = Math.min(3.5 + (fase - 1) * 0.2, 5);
+                criarFrutas();
+            } else {
+                frutas.push(novaFruta());
+            }
+        }
+    }
+
+    // Colidir com obstáculos
+    if (agora < protecao) return;
+
+    for (const o of obstaculos) {
+        if (distancia(ovelha, o) < ovelha.raio + o.r * 0.72) {
+            vidas--;
+            vidasEl.textContent = vidas;
+
+            // Reposiciona a ovelhinha em segurança
+            ovelha.x = 65;
+            ovelha.y = 70;
+
+            protecao = agora + 1200;
+            ultimoDano = agora;
+
+            if (vidas <= 0) {
+                fimDeJogo = true;
+            }
+
+            break;
+        }
+    }
+}
+
+function desenharCampo() {
+    ctx.fillStyle = "#83df61";
+    ctx.fillRect(0, 0, W, H);
+
+    // Manchas suaves de grama
+    for (let i = 0; i < 100; i++) {
+        const x = (i * 97 + 13) % W;
+        const y = (i * 67 + 21) % H;
+
+        ctx.fillStyle = i % 2 ? "#6dcc4e" : "#9be777";
+        ctx.beginPath();
+        ctx.ellipse(x, y, 7, 3, -0.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Riacho decorativo
+    ctx.fillStyle = "#40c9f5";
+    ctx.beginPath();
+    ctx.moveTo(870, 0);
+    ctx.lineTo(900, 0);
+    ctx.lineTo(900, 520);
+    ctx.lineTo(845, 520);
+    ctx.quadraticCurveTo(820, 455, 865, 400);
+    ctx.quadraticCurveTo(900, 340, 860, 280);
+    ctx.quadraticCurveTo(830, 220, 870, 170);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "#c0f4ff";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(885, 40);
+    ctx.quadraticCurveTo(850, 100, 882, 150);
+    ctx.quadraticCurveTo(900, 200, 865, 250);
+    ctx.stroke();
+
+    // Flores coloridas
+    const cores = ["#fff5a5", "#ff8dc5", "#ffffff", "#b79aff"];
+
+    for (let i = 0; i < 42; i++) {
+        const x = (i * 139 + 37) % 820;
+        const y = (i * 83 + 25) % H;
+
+        ctx.fillStyle = cores[i % cores.length];
+
+        for (let j = 0; j < 5; j++) {
+            const a = j * Math.PI * 2 / 5;
+            ctx.beginPath();
+            ctx.arc(
+                x + Math.cos(a) * 4,
+                y + Math.sin(a) * 4,
+                3,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+        }
+
+        ctx.fillStyle = "#ffcf39";
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Arbustos decorativos
+    for (let i = 0; i < 10; i++) {
+        const x = 30 + i * 86;
+        const y = i % 2 === 0 ? 15 : H - 15;
+
+        ctx.fillStyle = "#278f43";
+        ctx.beginPath();
+        ctx.arc(x, y, 15, 0, Math.PI * 2);
+        ctx.arc(x + 12, y + 2, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#62c94d";
+        ctx.beginPath();
+        ctx.arc(x - 4, y - 5, 8, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function desenharArvore(o) {
+    ctx.fillStyle = "#88512e";
+    ctx.fillRect(o.x - 6, o.y - 2, 12, 23);
+
+    ctx.fillStyle = "#278742";
+    ctx.beginPath();
+    ctx.arc(o.x, o.y - 13, 24, 0, Math.PI * 2);
+    ctx.arc(o.x - 13, o.y - 5, 15, 0, Math.PI * 2);
+    ctx.arc(o.x + 13, o.y - 5, 15, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#5bc64c";
+    ctx.beginPath();
+    ctx.arc(o.x - 7, o.y - 20, 8, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function desenharObstaculos() {
+    for (const o of obstaculos) {
+        if (o.tipo === "tree") {
+            desenharArvore(o);
+        } else if (o.tipo === "rock") {
+            ctx.fillStyle = "#8b98a6";
+            ctx.beginPath();
+            ctx.ellipse(o.x, o.y, 23, 17, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#c4ced5";
+            ctx.beginPath();
+            ctx.ellipse(o.x - 5, o.y - 5, 9, 4, -0.4, 0, Math.PI * 2);
+            ctx.fill();
+        } else if (o.tipo === "log") {
+            ctx.save();
+            ctx.translate(o.x, o.y);
+            ctx.rotate(-0.2);
+
+            ctx.fillStyle = "#9b5d2f";
+            ctx.fillRect(-25, -10, 50, 20);
+
+            ctx.fillStyle = "#d69a5b";
+            ctx.beginPath();
+            ctx.ellipse(-24, 0, 7, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        } else {
+            ctx.fillStyle = "#9d6237";
+            ctx.fillRect(o.x - 28, o.y - 4, 56, 8);
+
+            for (const dx of [-23, 0, 23]) {
+                ctx.fillRect(o.x + dx - 3, o.y - 17, 6, 35);
+            }
+        }
+    }
+}
+
+function desenharFrutas() {
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "27px Arial";
+
+    for (const fruta of frutas) {
+        ctx.fillText(fruta.tipo, fruta.x, fruta.y);
+    }
+}
+
+function desenharOvelha(agora) {
+    // Pisca temporariamente após uma colisão
+    if (agora < protecao && Math.floor(agora / 100) % 2 === 0) {
+        return;
+    }
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = "38px Arial";
+    ctx.fillText("🐑", ovelha.x, ovelha.y);
+}
+
+function mensagemFim() {
+    ctx.fillStyle = "rgba(27, 67, 37, 0.78)";
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillStyle = "#fff4a8";
+    ctx.font = "bold 38px Arial";
+    ctx.fillText("🐑 Fim de jogo!", W / 2, H / 2 - 35);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "24px Arial";
+    ctx.fillText("Pontuação: " + pontos, W / 2, H / 2 + 12);
+
+    ctx.font = "18px Arial";
+    ctx.fillText("Clique em Reiniciar para jogar novamente",
+        W / 2, H / 2 + 55);
+}
+
+function desenhar(agora) {
+    desenharCampo();
+    desenharObstaculos();
+    desenharFrutas();
+    desenharOvelha(agora);
+
+    if (fimDeJogo) {
+        mensagemFim();
+    }
+}
+
+function loop(tempo) {
+    const dt = ultimoTempo === 0
+        ? 1
+        : Math.min((tempo - ultimoTempo) / 16.67, 2);
+
+    ultimoTempo = tempo;
+
+    moverOvelha(dt);
+    verificarColisoes(tempo);
+    desenhar(tempo);
+
+    requestAnimationFrame(loop);
+}
+
+function reiniciar() {
+    pontos = 0;
+    vidas = 3;
+    fase = 1;
+    fimDeJogo = false;
+    protecao = 0;
+    ultimoDano = 0;
+
+    ovelha.x = 65;
+    ovelha.y = 70;
+    ovelha.velocidade = 3.5;
+
+    pontosEl.textContent = pontos;
+    vidasEl.textContent = vidas;
+    faseEl.textContent = fase;
+
+    criarFrutas();
+}
+
+document.getElementById("reiniciar").addEventListener("click", reiniciar);
+
+criarFrutas();
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>
